@@ -42,13 +42,20 @@ def welcome_message(message: types.Message):
 
 @bot.callback_query_handler(func=lambda x: True)
 def callback(cb: types.CallbackQuery):
-    if cb.data in (as_command(cmd_type) for cmd_type in CommandType):
-        bot.answer_callback_query(cb.id, "Nice")
+    if cb.data in (cmd_type.name for cmd_type in CommandType):
+        cmd_type = CommandType[cb.data]
+        handler_for(cmd_type)(cb.message)
+        bot.answer_callback_query(cb.id)
 
 
 @message_handler(bot, CommandType.Project)
 def new_project(message: types.Message):
     bot.send_message(message.chat.id, "Йо, новий проєкт?")
+
+
+@message_handler(bot, CommandType.MediaSupport)
+def new_project(message: types.Message):
+    bot.send_message(message.chat.id, 'Потрібна моя підтримка?')
 
 
 bot.infinity_polling()

@@ -47,19 +47,30 @@ def as_bot_command(cmd_type: CommandType) -> BotCommand:
 
 
 def as_inline_button(cmd_type: CommandType) -> InlineKeyboardButton:
-    return InlineKeyboardButton(text=as_message(cmd_type), callback_data=as_command(cmd_type))
+    return InlineKeyboardButton(text=as_message(cmd_type), callback_data=cmd_type.name)
 
 
 def message_handler(bot, cmd_type: CommandType):
-    def _inner(wrapped):
-        func = \
+
+    def _inner(func):
+        decorated_func = \
             bot.message_handler(commands=[as_command_text(cmd_type)])(
                 bot.message_handler(func=lambda message: message.text == as_message(cmd_type))(
-                    wrapped
+                    func
                 )
             )
-        return func
+        if cmd_type not in message_handler.command_handlers:
+            message_handler.command_handlers[cmd_type] = decorated_func
+        return decorated_func
+
     return _inner
+
+
+message_handler.command_handlers = {}
+
+
+def handler_for(cmd_type: CommandType):
+    return message_handler.command_handlers[cmd_type]
 
 
 if __name__ == '__main__':
