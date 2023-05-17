@@ -1,5 +1,4 @@
-import telebot
-from telebot.types import ReplyKeyboardMarkup
+import telebot.types as types
 from telebot import TeleBot
 
 from commands import *
@@ -19,16 +18,37 @@ bot.set_my_commands([
     as_bot_command(CommandType.Help)
 ])
 
-keyboard = ReplyKeyboardMarkup(True, True)
-keyboard.add(as_message(CommandType.Project))
-keyboard.add(as_message(CommandType.MediaSupport))
-keyboard.add(as_message(CommandType.Appeal))
-keyboard.add(as_message(CommandType.Discounts))
+# keyboard = types.ReplyKeyboardMarkup(True, True)
+# keyboard.add(as_message(CommandType.Project))
+# keyboard.add(as_message(CommandType.MediaSupport))
+# keyboard.add(as_message(CommandType.Appeal))
+# keyboard.add(as_message(CommandType.Discounts))
+
+inline_keyboard = types.InlineKeyboardMarkup(
+    [
+        [as_inline_button(CommandType.Project)],
+        [as_inline_button(CommandType.MediaSupport)],
+        [as_inline_button(CommandType.Appeal)],
+        [as_inline_button(CommandType.Discounts)]
+    ],
+    1
+)
 
 
 @bot.message_handler(commands=['start', 'help'])
-def welcome_message(message):
-    bot.send_message(message.chat.id, msg.start, reply_markup=keyboard)
+def welcome_message(message: types.Message):
+    bot.send_message(message.chat.id, msg.start, reply_markup=inline_keyboard)
+
+
+@bot.callback_query_handler(func=lambda x: True)
+def callback(cb: types.CallbackQuery):
+    if cb.data in (as_command(cmd_type) for cmd_type in CommandType):
+        bot.answer_callback_query(cb.id, "Nice")
+
+
+@message_handler(bot, CommandType.Project)
+def new_project(message: types.Message):
+    bot.send_message(message.chat.id, "Йо, новий проєкт?")
 
 
 bot.infinity_polling()

@@ -1,7 +1,8 @@
 import enum
 from enum import Enum
 
-from telebot.types import BotCommand
+from telebot.types import BotCommand, InlineKeyboardButton
+
 
 @enum.unique
 class CommandType(Enum):
@@ -43,6 +44,22 @@ def as_message(cmd_type: CommandType) -> str:
 
 def as_bot_command(cmd_type: CommandType) -> BotCommand:
     return BotCommand(as_command(cmd_type), as_message(cmd_type))
+
+
+def as_inline_button(cmd_type: CommandType) -> InlineKeyboardButton:
+    return InlineKeyboardButton(text=as_message(cmd_type), callback_data=as_command(cmd_type))
+
+
+def message_handler(bot, cmd_type: CommandType):
+    def _inner(wrapped):
+        func = \
+            bot.message_handler(commands=[as_command_text(cmd_type)])(
+                bot.message_handler(func=lambda message: message.text == as_message(cmd_type))(
+                    wrapped
+                )
+            )
+        return func
+    return _inner
 
 
 if __name__ == '__main__':
