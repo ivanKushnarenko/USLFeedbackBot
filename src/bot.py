@@ -58,6 +58,7 @@ def send_not_implemented(bot: TeleBot, chat_id: int):
 def start_processing_command(chat_id: int, cmd_type: CommandType):
     if cmd_type not in msg.commands:
         send_not_implemented(bot, chat_id)
+        return
     questions = msg.commands[cmd_type]
     answers: list[str] = []
     if len(questions):
