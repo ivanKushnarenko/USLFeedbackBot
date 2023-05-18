@@ -61,25 +61,22 @@ def start_processing_command(chat_id: int, cmd_type: CommandType):
         return
     questions = msg.commands[cmd_type]
     answers: list[str] = []
-    if len(questions):
-        ask_question(chat_id, questions, 0, answers)
-    else:
-        send_not_implemented(bot, chat_id)
+    ask_question(chat_id, questions, 0, answers, cmd_type)
 
 
-def ask_question(chat_id: int, questions: list[str], i: int, answers: list[str]):
+def ask_question(chat_id: int, questions: list[str], i: int, answers: list[str], cmd_type: CommandType):
     bot.send_message(chat_id, questions[i])
-    bot.register_next_step_handler_by_chat_id(chat_id, process_answer, questions, i + 1, answers)
+    bot.register_next_step_handler_by_chat_id(chat_id, process_answer, questions, i + 1, answers, cmd_type)
 
 
-def process_answer(message: types.Message, questions: list[str], i: int, answers: list[str]):
+def process_answer(message: types.Message, questions: list[str], i: int, answers: list[str], cmd_type: CommandType):
     answers.append(message.text)
     if i < len(questions):
-        ask_question(message.chat.id, questions, i, answers)
+        ask_question(message.chat.id, questions, i, answers, cmd_type)
     else:
         answer = msg.command_end
         bot.send_message(message.chat.id, answer, reply_markup=inline_keyboard)
-        bot.send_message(config.CHAT_ID, utils.answers_str(answers))
+        utils.send_message_to_my_chat(bot, utils.answers_str(answers, cmd_type, message.from_user.username))
 
 
 @message_handler(bot, CommandType.Project)

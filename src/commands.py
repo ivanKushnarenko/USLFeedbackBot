@@ -55,13 +55,10 @@ def message_handler(bot, cmd_type: CommandType):
     def _inner(func):
         decorated_func = \
             bot.message_handler(commands=[as_command_text(cmd_type)])(
-                bot.message_handler(func=lambda message: message.text == as_message(cmd_type))(
-                    func
-                )
+                func
             )
         if cmd_type not in message_handler.command_handlers:
             message_handler.command_handlers[cmd_type] = decorated_func
-        decorated_func.cmd_type = cmd_type
         return decorated_func
 
     return _inner
