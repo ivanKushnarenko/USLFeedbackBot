@@ -77,8 +77,9 @@ def process_answer(message: types.Message, questions: list[str], i: int, answers
     if i < len(questions):
         ask_question(message.chat.id, questions, i, answers)
     else:
-        answer = msg.command_end + utils.answers_str(answers)
-        bot.send_message(message.chat.id, answer)
+        answer = msg.command_end
+        bot.send_message(message.chat.id, answer, reply_markup=inline_keyboard)
+        bot.send_message(config.CHAT_ID, utils.answers_str(answers))
 
 
 @message_handler(bot, CommandType.Project)
