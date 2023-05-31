@@ -6,6 +6,8 @@ start = '''Вітаємо, це бот для пропозицій до спів
 
 Творимо кращий час разом!'''
 
+invitation = 'Представтесь, будь ласка (вкажіть ваш ПІБ, та університет, представником якого ви є).'
+
 commands = {
     CommandType.Project: [
         'Надайте короткий опис проєкту (5-10 речень).',
@@ -59,7 +61,7 @@ _Додаткова інформація:_
 
 
 def chat_message(cmd_type: CommandType) -> str:
-    message: str = "Користувач @{} "
+    message: str = "Користувач {} "
     if cmd_type in _command_chat_message:
         message += _command_chat_message[cmd_type]
     return message

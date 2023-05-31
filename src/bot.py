@@ -4,6 +4,8 @@ from telebot import TeleBot
 import config
 import messages as msg
 import utils
+from user import UserInfo
+import auth
 from commands import *
 
 bot = TeleBot(config.API_TOKEN)
@@ -34,7 +36,7 @@ inline_keyboard = types.InlineKeyboardMarkup(
 )
 
 
-@bot.message_handler(commands=['start', 'help'])
+@bot.message_handler(commands=['help'])
 def welcome_message(message: types.Message):
     bot.send_message(message.chat.id, msg.start, reply_markup=inline_keyboard)
 
@@ -76,7 +78,7 @@ def process_answer(message: types.Message, questions: list[str], i_next_question
     else:
         answer = msg.command_end
         bot.send_message(message.chat.id, answer, reply_markup=inline_keyboard)
-        utils.send_message_to_my_chat(bot, utils.answers_str(answers, cmd_type, message.from_user.username))
+        utils.send_message_to_my_chat(bot, utils.answers_str(answers, cmd_type, message.from_user))
 
 
 @message_handler(bot, CommandType.Project)
@@ -97,6 +99,23 @@ def appeal(message: types.Message):
 @message_handler(bot, CommandType.Discounts)
 def discounts(message: types.Message):
     start_processing_command(message.chat.id, CommandType.Discounts)
+
+
+@bot.message_handler(commands=['start'])
+def authorize(message: types.Message):
+    if auth.is_authorized(message.from_user.id):
+        welcome_message(message)
+    else:
+        bot.send_message(message.chat.id, msg.invitation)
+        bot.register_next_step_handler_by_chat_id(message.chat.id, save_user_info)
+
+
+def save_user_info(message: types.Message):
+    user = UserInfo(username=message.from_user.username,
+                    full_name=message.from_user.full_name,
+                    description=message.text)
+    auth.authorize(message.from_user.id, user)
+    welcome_message(message)
 
 
 bot.infinity_polling()
