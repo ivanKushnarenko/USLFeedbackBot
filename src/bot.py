@@ -1,12 +1,10 @@
 import telebot.types as types
 from telebot import TeleBot
 
-from commands import *
-
-
 import config
 import messages as msg
 import utils
+from commands import *
 
 bot = TeleBot(config.API_TOKEN)
 
@@ -52,27 +50,29 @@ def callback(cb: types.CallbackQuery):
 
 
 def send_not_implemented(bot: TeleBot, chat_id: int):
-    bot.send_message(chat_id, 'Поки що не зроблено:(')
+    bot.send_message(chat_id, 'Зовсім скоро тут зʼявляться унікальні можливості саме для тебе:)')
 
 
 def start_processing_command(chat_id: int, cmd_type: CommandType):
-    if cmd_type not in msg.commands:
+    if cmd_type not in msg.commands or not msg.commands[cmd_type]:
         send_not_implemented(bot, chat_id)
         return
     questions = msg.commands[cmd_type]
     answers: list[str] = []
-    ask_question(chat_id, questions, 0, answers, cmd_type)
+    first_question_idx: int = 0
+    ask_question(chat_id, questions, first_question_idx, answers, cmd_type)
 
 
-def ask_question(chat_id: int, questions: list[str], i: int, answers: list[str], cmd_type: CommandType):
-    bot.send_message(chat_id, questions[i])
-    bot.register_next_step_handler_by_chat_id(chat_id, process_answer, questions, i + 1, answers, cmd_type)
+def ask_question(chat_id: int, questions: list[str], i_question: int, answers: list[str], cmd_type: CommandType):
+    bot.send_message(chat_id, questions[i_question])
+    bot.register_next_step_handler_by_chat_id(chat_id, process_answer, questions, i_question + 1, answers, cmd_type)
 
 
-def process_answer(message: types.Message, questions: list[str], i: int, answers: list[str], cmd_type: CommandType):
+def process_answer(message: types.Message, questions: list[str], i_next_question: int, answers: list[str],
+                   cmd_type: CommandType):
     answers.append(message.text)
-    if i < len(questions):
-        ask_question(message.chat.id, questions, i, answers, cmd_type)
+    if i_next_question < len(questions):
+        ask_question(message.chat.id, questions, i_next_question, answers, cmd_type)
     else:
         answer = msg.command_end
         bot.send_message(message.chat.id, answer, reply_markup=inline_keyboard)

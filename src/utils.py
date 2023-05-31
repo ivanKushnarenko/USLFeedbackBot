@@ -1,6 +1,6 @@
-from commands import CommandType
 import config
 import messages as msg
+from commands import CommandType
 
 
 def answers_str(answers: list[str], cmd_type: CommandType, username: str) -> str:
