@@ -1,20 +1,12 @@
 import typing
 
-from user import UserInfo
+import db
+from user import User
 
 
-_users: dict[int, UserInfo] = {}
+def authorize(user: User):
+    db.add_user(user)
 
 
-def authorize(user_id: int, user: UserInfo):
-    _users.update({user_id: user})
-
-
-def is_authorized(user_id: int) -> bool:
-    return user_id in _users
-
-
-def user_info(user_id: int) -> typing.Optional[UserInfo]:
-    if user_id in _users:
-        return _users[user_id]
-    return None
+def get_authorized_user(user_id: int) -> typing.Optional[User]:
+    return db.get_user(user_id)

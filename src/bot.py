@@ -4,7 +4,7 @@ from telebot import TeleBot
 import config
 import messages as msg
 import utils
-from user import UserInfo
+from user import User
 import auth
 from commands import *
 
@@ -103,7 +103,8 @@ def discounts(message: types.Message):
 
 @bot.message_handler(commands=['start'])
 def authorize(message: types.Message):
-    if auth.is_authorized(message.from_user.id):
+    authorized_user = auth.get_authorized_user(message.from_user.id)
+    if authorized_user is not None:
         welcome_message(message)
     else:
         bot.send_message(message.chat.id, msg.invitation)
@@ -111,10 +112,11 @@ def authorize(message: types.Message):
 
 
 def save_user_info(message: types.Message):
-    user = UserInfo(username=message.from_user.username,
-                    full_name=message.from_user.full_name,
-                    description=message.text)
-    auth.authorize(message.from_user.id, user)
+    user = User(id=message.from_user.id,
+                username=message.from_user.username,
+                full_name=message.from_user.full_name,
+                description=message.text)
+    auth.authorize(user)
     welcome_message(message)
 
 
