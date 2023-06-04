@@ -78,7 +78,7 @@ def process_answer(message: types.Message, questions: list[str], i_next_question
     else:
         answer = msg.command_end
         bot.send_message(message.chat.id, answer, reply_markup=inline_keyboard)
-        utils.send_message_to_my_chat(bot, utils.answers_str(answers, cmd_type, message.from_user))
+        utils.send_answers(bot, answers, cmd_type, message.from_user)
 
 
 @message_handler(bot, CommandType.Project)
