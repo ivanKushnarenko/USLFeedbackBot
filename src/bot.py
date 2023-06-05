@@ -1,12 +1,12 @@
 import telebot.types as types
 from telebot import TeleBot
 
+import auth
 import config
 import messages as msg
 import utils
-from user import User
-import auth
 from commands import *
+from user import User
 
 bot = TeleBot(config.API_TOKEN)
 
@@ -43,9 +43,7 @@ def welcome_message(message: types.Message):
 
 @bot.callback_query_handler(func=lambda x: True)
 def callback(cb: types.CallbackQuery):
-    if cb.data not in (cmd_type.name for cmd_type in CommandType):
-        pass
-    else:
+    if cb.data in (cmd_type.name for cmd_type in CommandType):
         cmd_type = CommandType[cb.data]
         handler_for(cmd_type)(cb.message)
         bot.answer_callback_query(cb.id)
@@ -76,8 +74,7 @@ def process_answer(message: types.Message, questions: list[str], i_next_question
     if i_next_question < len(questions):
         ask_question(message.chat.id, questions, i_next_question, answers, cmd_type)
     else:
-        answer = msg.command_end
-        bot.send_message(message.chat.id, answer, reply_markup=inline_keyboard)
+        bot.send_message(message.chat.id, msg.command_end, reply_markup=inline_keyboard)
         utils.send_answers(bot, answers, cmd_type, message.from_user)
 
 
