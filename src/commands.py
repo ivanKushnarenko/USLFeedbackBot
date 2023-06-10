@@ -53,7 +53,7 @@ def as_inline_button(cmd_type: CommandType) -> InlineKeyboardButton:
 def message_handler(bot, cmd_type: CommandType):
     def _inner(func):
         decorated_func = \
-            bot.message_handler(commands=[as_command_text(cmd_type)])(
+            bot.message_handler(commands=[as_command_text(cmd_type)], chat_types=['private'])(
                 func
             )
         if cmd_type not in message_handler.command_handlers:

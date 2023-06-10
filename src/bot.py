@@ -27,7 +27,7 @@ inline_keyboard = types.InlineKeyboardMarkup(
 )
 
 
-@bot.message_handler(commands=['help'])
+@bot.message_handler(commands=['help'], chat_types=['private'])
 def welcome_message(message: types.Message):
     bot.send_message(message.chat.id, msg.start, reply_markup=inline_keyboard)
 
@@ -89,7 +89,7 @@ def discounts(message: types.Message):
     start_processing_command(message.chat.id, CommandType.Discounts)
 
 
-@bot.message_handler(commands=['start'])
+@bot.message_handler(commands=['start'], chat_types=['private'])
 def authorize(message: types.Message):
     authorized_user = auth.get_authorized_user(message.from_user.id)
     if authorized_user is not None:
@@ -108,6 +108,8 @@ def save_user_info(message: types.Message):
     welcome_message(message)
     bot.set_my_commands(commands=USER_COMMANDS,
                         scope=types.BotCommandScopeChat(message.chat.id))
+
+
 
 
 bot.infinity_polling()
