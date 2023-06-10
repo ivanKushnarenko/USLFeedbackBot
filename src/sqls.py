@@ -10,6 +10,7 @@ messages_table_script: str = '''CREATE TABLE IF NOT EXISTS messages (
     text TEXT NOT NULL,
     command TEXT NOT NULL,
     user_id INTEGER NOT NULL,
+    timestamp INTEGER NOT NULL,
     CONSTRAINT message_user_fk 
         FOREIGN KEY (user_id) REFERENCES users (id) 
             ON DELETE SET NULL
