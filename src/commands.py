@@ -70,6 +70,14 @@ def handler_for(cmd_type: CommandType):
     return message_handler.command_handlers[cmd_type]
 
 
+USER_COMMANDS: list[BotCommand] = [
+    as_bot_command(CommandType.Project),
+    as_bot_command(CommandType.MediaSupport),
+    as_bot_command(CommandType.Appeal),
+    as_bot_command(CommandType.Discounts),
+    as_bot_command(CommandType.Help)
+]
+
 if __name__ == '__main__':
     print(f'CommandType.Project as command: {as_command(CommandType.Project)}')
     print(f'CommandType.MediaSupport as command text: {as_command_text(CommandType.MediaSupport)}')

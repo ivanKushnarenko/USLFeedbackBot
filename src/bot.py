@@ -10,15 +10,6 @@ from user import User
 
 bot = TeleBot(config.API_TOKEN)
 
-bot.delete_my_commands()
-bot.set_my_commands([
-    as_bot_command(CommandType.Project),
-    as_bot_command(CommandType.MediaSupport),
-    as_bot_command(CommandType.Appeal),
-    as_bot_command(CommandType.Discounts),
-    as_bot_command(CommandType.Help)
-])
-
 # keyboard = types.ReplyKeyboardMarkup(True, True)
 # keyboard.add(as_message(CommandType.Project))
 # keyboard.add(as_message(CommandType.MediaSupport))
@@ -115,6 +106,8 @@ def save_user_info(message: types.Message):
                 description=message.text)
     auth.authorize(user)
     welcome_message(message)
+    bot.set_my_commands(commands=USER_COMMANDS,
+                        scope=types.BotCommandScopeChat(message.chat.id))
 
 
 bot.infinity_polling()
