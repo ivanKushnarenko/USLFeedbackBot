@@ -69,7 +69,7 @@ def process_answer(message: types.Message, questions: list[str], i_next_question
         bot.send_message(message.chat.id, msg.command_end, reply_markup=inline_keyboard)
         utils.send_answers(bot, answers, cmd_type, message.from_user)
         if answers:
-            db.add_message(message.id, answers[0], as_command_text(cmd_type), message.from_user.id)
+            db.add_message(message.id, answers[0], cmd_type, message.from_user.id)
 
 
 @message_handler(bot, CommandType.Project)

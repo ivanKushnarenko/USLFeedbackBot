@@ -2,11 +2,12 @@ from  contextlib import contextmanager
 import logging as log
 import sqlite3 as sql
 from typing import Optional
+import datetime as dt
 
 import config
 import sqls as scripts
 from user import User
-from commands import CommandType
+from commands import CommandType, as_command_text
 
 
 def _logger():
@@ -17,6 +18,7 @@ def _logger():
 
 @contextmanager
 def _db_connection():
+    connection = None
     try:
         connection = sql.connect(config.DB_FILE)
         yield connection
@@ -30,7 +32,7 @@ def _ensure_tables():
     with _db_connection() as conn:
         with conn:
             conn.execute(scripts.users_table_script)
-            conn.execute(scripts.messages_script)
+            conn.execute(scripts.messages_table_script)
 
 
 def add_user(user: User):
@@ -52,10 +54,11 @@ def get_user(user_id: int) -> Optional[User]:
         return None
 
 
-def add_message(message_id: int, title: str, cmd: str, user_id: int):
+def add_message(message_id: int, title: str, cmd: CommandType, user_id: int):
     with _db_connection() as conn:
         with conn:
-            params: tuple = (message_id, title, cmd, user_id)
+            params: tuple = (message_id, title, as_command_text(cmd), user_id,
+                             int(dt.datetime.now().strftime("%Y%m%d%H%M%S")))
             conn.execute(scripts.add_message_script, params)
 
 

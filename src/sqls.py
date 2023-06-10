@@ -20,5 +20,9 @@ add_user_script: str = "INSERT INTO users (id, full_name, username, description)
 
 get_user_script: str = "SELECT DISTINCT id, username, full_name, description FROM users WHERE id = ?;"
 
-add_message_script: str = "INSERT INTO messages (id, title, command, user_id) " \
-                          "VALUES (?, ?, ?, ?);"
+add_message_script: str = "INSERT INTO messages (id, title, command, user_id, timestamp) " \
+                          "VALUES (?, ?, ?, ?, ?);"
+
+get_messages_script: str = "SELECT m.id, m.title, u.id, u.username, u.full_name FROM messages m " \
+                           "INNER JOIN users u on u.id = m.user_id " \
+                           "WHERE m.command = ?;"
