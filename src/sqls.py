@@ -5,7 +5,7 @@ users_table_script: str = '''CREATE TABLE IF NOT EXISTS users (
     description TEXT NOT NULL
 );'''
 
-messages_script: str = '''CREATE TABLE IF NOT EXISTS messages (
+messages_table_script: str = '''CREATE TABLE IF NOT EXISTS messages (
     id INTEGER PRIMARY KEY UNIQUE,
     text TEXT NOT NULL,
     command TEXT NOT NULL,
@@ -19,3 +19,6 @@ add_user_script: str = "INSERT INTO users (id, full_name, username, description)
                        "VALUES (?, ?, ?, ?);"
 
 get_user_script: str = "SELECT DISTINCT id, username, full_name, description FROM users WHERE id = ?;"
+
+add_message_script: str = "INSERT INTO messages (id, title, command, user_id) " \
+                          "VALUES (?, ?, ?, ?);"

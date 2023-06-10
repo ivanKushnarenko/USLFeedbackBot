@@ -3,6 +3,7 @@ from telebot import TeleBot
 
 import auth
 import config
+import db
 import messages as msg
 import utils
 from commands import *
@@ -67,6 +68,8 @@ def process_answer(message: types.Message, questions: list[str], i_next_question
     else:
         bot.send_message(message.chat.id, msg.command_end, reply_markup=inline_keyboard)
         utils.send_answers(bot, answers, cmd_type, message.from_user)
+        if answers:
+            db.add_message(message.id, answers[0], as_command_text(cmd_type), message.from_user.id)
 
 
 @message_handler(bot, CommandType.Project)

@@ -6,6 +6,7 @@ from typing import Optional
 import config
 import sqls as scripts
 from user import User
+from commands import CommandType
 
 
 def _logger():
@@ -51,7 +52,14 @@ def get_user(user_id: int) -> Optional[User]:
         return None
 
 
-def add_message(message_id: int, user_id, user):
+def add_message(message_id: int, title: str, cmd: str, user_id: int):
+    with _db_connection() as conn:
+        with conn:
+            params: tuple = (message_id, title, cmd, user_id)
+            conn.execute(scripts.add_message_script, params)
+
+
+def get_messages(cmd: CommandType):
     pass
 
 
