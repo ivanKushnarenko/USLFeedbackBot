@@ -7,7 +7,7 @@ users_table_script: str = '''CREATE TABLE IF NOT EXISTS users (
 
 messages_table_script: str = '''CREATE TABLE IF NOT EXISTS messages (
     id INTEGER PRIMARY KEY UNIQUE,
-    text TEXT NOT NULL,
+    title TEXT NOT NULL,
     command TEXT NOT NULL,
     user_id INTEGER NOT NULL,
     timestamp INTEGER NOT NULL,
