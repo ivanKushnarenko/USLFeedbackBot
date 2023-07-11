@@ -1,5 +1,3 @@
-API_TOKEN = '5908840001:AAEJuYfte50-FqLLA3D8-6J9pPsxpn_JeRU'
-
-CHAT_ID = -846818360
-
 DB_FILE = "../feedback.db"
+
+ENV_FILE = "../.env"

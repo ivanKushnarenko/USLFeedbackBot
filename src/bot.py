@@ -1,3 +1,4 @@
+import dotenv
 import telebot.types as types
 from telebot import TeleBot
 
@@ -5,11 +6,14 @@ import auth
 import config
 import db
 import messages as msg
+import os
 import utils
 from commands import *
 from user import User
 
-bot = TeleBot(config.API_TOKEN)
+dotenv.load_dotenv(config.ENV_FILE)
+
+bot = TeleBot(os.getenv('API_TOKEN'))
 
 # keyboard = types.ReplyKeyboardMarkup(True, True)
 # keyboard.add(as_message(CommandType.Project))

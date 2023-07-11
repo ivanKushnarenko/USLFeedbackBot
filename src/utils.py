@@ -1,3 +1,4 @@
+import os
 from typing import Optional
 
 import telebot.types
@@ -24,4 +25,4 @@ def send_answers(bot, answers: list[str], cmd_type: CommandType, from_user: tele
 
 
 def send_message_to_my_chat(bot, message_text: str):
-    bot.send_message(config.CHAT_ID, message_text, parse_mode='markdown')
+    bot.send_message(os.getenv('MY_CHAT_ID'), message_text, parse_mode='markdown')
